@@ -1,0 +1,25 @@
+diff --git a/osfmk/arm/arm_init.c b/osfmk/arm/arm_init.c
+index 77480a1..f1823a0 100644
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -440,9 +440,12 @@ extern const char cepheus_tag_fix[];
+ 		unsigned long dtpA = pa + 0x1000UL;
+ 		volatile unsigned int *headB = (volatile unsigned int *)(uintptr_t)dtpB;
+ 		volatile unsigned int *headA = (volatile unsigned int *)(uintptr_t)dtpA;
++		cepheus_early_mark(21, "before headA read (argsPA+0x1000)");
+ 		unsigned int magicA = headA[0];
++		cepheus_early_mark(22, "before headB read (treePA)");
+ 		unsigned int magicB = headB[0];
+ 		unsigned int rootB1 = headB[1];
++		cepheus_early_mark(23, "headA+headB reads returned");
+ 		unsigned long dtp = dtpB;
+ 
+ 		if (magicB == 0xd00dfeedu) {
+@@ -463,6 +466,7 @@ extern const char cepheus_tag_fix[];
+ 		cepheus_dt_head[5] = rootB1;
+ 		cepheus_dt_head[6] = dtp;
+ 		cepheus_early_boot_dump(cepheus_dt_head, cepheus_tag_fix);
++		cepheus_early_mark(24, "dtfix dump returned");
+ 
+ 		for (int di = 0; di < 20; di++) {
+ 			cepheus_dt_head[di] = ((volatile unsigned long *)dtp)[di];
